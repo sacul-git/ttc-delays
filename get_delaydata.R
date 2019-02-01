@@ -1,5 +1,6 @@
 library(curl)
-library(dplyr)
+library(tidyverse)
+library(lubridate)
 library(readxl)
 
 get_data_ttc  <- function(year = 2018){
@@ -56,14 +57,18 @@ parse_frames <- function(filename = "data/delay_data.csv", write_file = TRUE,
     dfs[[i]] <- d
     i <- i + 1
   }
+  data_out <- bind_rows(dfs) %>%
+     select_all(~str_replace(., " ", "_")) %>%
+     mutate(Report_Date = as_date(.$Report_Date),
+            Time = format(ymd_hms(.$Time), "%H:%M:%S"))
   if (delete_xlfiles){
     file.remove(files)
   }
   if (write_file){
-    write.csv(bind_rows(dfs), filename, row.names = FALSE)
+    write.csv(data_out, filename, row.names = FALSE)
   }
   else{
-    return(bind_rows(dfs))
+    return(data_out)
   }
 }
 
@@ -73,5 +78,5 @@ for (year in c(2014:2018)){
   get_data_ttc(year)
 }
 
-# parse the frames and save them to csv
+# parse the frames and save result to csv
 parse_frames()
