@@ -8,7 +8,7 @@ get_data_ttc  <- function(year = 2018){
     # This function will hopefully be removed by the upcoming open data API
     #
     # Args:
-    #  Year: the year for which data will be downloaded. 
+    #  Year: the year for which data will be downloaded.
     #        Currently, only 2014-2018 data is available
   base_url <- "https://www.toronto.ca/ext/open_data/catalog/data_set_files/Bus"
   url <- paste0(base_url, paste0("_", year), ".xlsx")
