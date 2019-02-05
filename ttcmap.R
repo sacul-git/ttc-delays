@@ -1,6 +1,7 @@
 library(shiny)
 library(leaflet)
 library(tidyverse)
+library(viridis)
 
 # load map data
 m <- readRDS("data/busroutes.rds")
@@ -17,15 +18,13 @@ inc_per_route <- d %>%
 
 Data <- inner_join(x = m, y = inc_per_route, by = c("route" = "Route"))
 
-leaflet(Data) %>% 
-    addPolylines(data = Data$geometry)
-
+sort(unique(Data$route))
 
 ui <- bootstrapPage(
   leafletOutput("map", width = "80%", height = "800"),
   absolutePanel(top = 10, right = 10,
     selectInput(inputId = "route", label = "Route",
-                choices = c(52)
+                choices = sort(unique(Data$route))
     ),
     selectInput(inputId = "year", label = "Year",
                 choices = c(2014:2018))
@@ -37,20 +36,24 @@ server <- function(input, output, session){
     Data %>% 
         filter(route == input$route)
   })
-  pal <- colorNumeric(
-    palette = "Reds",  
-    domain = Data$n_incidents)
+
+  colorpal <- reactive(colorNumeric(
+    palette = "viridis",
+    domain = Data$n_incidents))
+
   # Static part of map:
   output$map <- renderLeaflet({
-    leaflet(m) %>%
+    leaflet(Data) %>%
       setView(lng = -79.367494, lat = 43.722780, zoom = 12) %>%
-      addProviderTiles(providers$Stamen.Toner)
+      addProviderTiles(providers$Stamen.Toner) %>% 
+      addLegend(position = "topright", pal = colorpal(), values = Data$n_incidents, title = "Number of incidents on each route")
   })
   observe({
-    pal <- pal
+    pal <- colorpal()
+
     leafletProxy("map", data = filtered()) %>% 
-        addPolylines(data = filtered()$geometry, label = ~as.factor(route),
-                     fillOpacity = 1, color = ~pal(n_incidents))
+        clearShapes() %>% 
+        addPolylines(label = ~as.factor(route), color = ~pal(n_incidents))
   })
 }
 
