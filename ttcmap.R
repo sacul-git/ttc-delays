@@ -3,21 +3,9 @@ library(shinyWidgets)
 library(leaflet)
 library(tidyverse)
 library(viridis)
-# sf package *must* be loaded in order to merge 
-# route and delay data and still get sf object
 library(sf)
 
-# load map data
-m <- readRDS("data/busroutes.rds")
-# load delay data
-d <- read_csv("data/delay_data.csv")
-# get incidents per year per route
-Data <- inc_year_route <- d %>%
-    mutate(year = format(.$Report_Date, "%Y")) %>%
-    group_by(Route, year) %>%
-    summarise(n_incidents = n()) %>%
-    arrange(desc(n_incidents)) %>%
-    inner_join(x = m, y = ., by=c("route" = "Route"))
+Data <- readRDS('data/Data.rds')
 
 ui <- shiny::fluidPage(
   shiny::titlePanel("TTC Delays"),
