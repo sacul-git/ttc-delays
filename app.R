@@ -5,7 +5,7 @@ library(tidyverse)
 library(viridis)
 library(sf)
 
-Data <- readRDS('data/Data.rds')
+Data <- readRDS("data/Data.rds")
 
 ui <- shiny::fluidPage(
   shiny::titlePanel("TTC Delays"),
@@ -28,7 +28,7 @@ ui <- shiny::fluidPage(
     )
 )
 
-server <- function(input, output, session){
+server <- function(input, output){
   # Filter the data
   filtered <- reactive({
     Data %>%
@@ -83,4 +83,5 @@ server <- function(input, output, session){
   })
 }
 
-shiny::shinyApp(ui, server)
+app <- shiny::shinyApp(ui, server)
+runApp(app)
