@@ -6,7 +6,7 @@ This shiny app is meant to visualize the bus routes with the most delays over th
 
 The app is live on [shinyapps.io](https://sacul.shinyapps.io/ttc_delays/)! Feel free to check it out!
 
-![](example.gif)
+![](screenshot.png)
 
 The delay data is acquired from the [Toronto Open Data Catalogue](https://www.toronto.ca/city-government/data-research-maps/open-data/open-data-catalogue/), and the bus route data is collected from OSM using the [osmdata](https://github.com/ropensci/osmdata) `R` library. The `get_data.R` script downloads and processes the data, and the processed data used in the app can be found in `data/Data.rds`.
 
