@@ -1,3 +1,4 @@
+library(plotly)
 library(shiny)
 library(shinyWidgets)
 library(leaflet)
@@ -22,7 +23,7 @@ ui <- shiny::fluidPage(
                                  `deselect-all-text` = "Deselect All Routes")
                   ),
       selectInput(inputId = "year", label = "Year", choices = c(2014:2018)),
-      plotOutput(outputId = "plot")
+      plotlyOutput(outputId = "plot")
     )
 )
 
@@ -71,17 +72,20 @@ server <- function(input, output){
   observeEvent(input$map_shape_click, {
     r <- input$map_shape_click$id
     d  <- Data %>% filter(route == r) %>% distinct(year, .keep_all=TRUE)
-    output$plot <- renderPlot({
-      ggplot(data = d, aes(x = year, y = n_incidents)) +
-          geom_bar(stat = "identity", aes(fill = n_incidents)) +
-          scale_fill_viridis(limits = c(min(Data$n_incidents),
-                                        max(Data$n_incidents))) +
-          labs(title = str_glue("Delays per Year on Route {r}"),
-               x = "Year", y = "Number of Reported Delays") +
-          theme(legend.position = "none",
-               plot.title = element_text(hjust = 0.5, size = 25),
-               axis.title = element_text(size = 18),
-               axis.text = element_text(size = 15))
+    output$plot <- renderPlotly({
+        ggplotly(ggplot(data = d, aes(x = year, y = n_incidents)) +
+                 geom_bar(stat = "identity", aes(fill = n_incidents,
+                          text = sprintf("Year: %s <br>Incidents: %s", year, n_incidents))) +
+                 scale_fill_viridis(limits = c(min(Data$n_incidents),
+                                               max(Data$n_incidents))) +
+                 labs(title = str_glue("Delays per Year on Route {r}"),
+                      x = "Year", y = "Number of Reported Delays") +
+                 theme(legend.position = "none",
+                       plot.title = element_text(hjust = 0.5, size = 25),
+                       axis.title = element_text(size = 18),
+                       axis.text = element_text(size = 15)),
+                 tooltip = "text"
+                 )
     })
   })
 
