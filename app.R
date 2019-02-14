@@ -74,7 +74,8 @@ server <- function(input, output){
     d  <- Data %>% filter(route == r) %>% distinct(year, .keep_all=TRUE)
     output$plot <- renderPlotly({
         ggplotly(ggplot(data = d, aes(x = year, y = n_incidents)) +
-                 geom_bar(stat = "identity", aes(fill = n_incidents)) +
+                 geom_bar(stat = "identity", aes(fill = n_incidents,
+                          text = sprintf("Year: %s <br>Incidents: %s", year, n_incidents))) +
                  scale_fill_viridis(limits = c(min(Data$n_incidents),
                                                max(Data$n_incidents))) +
                  labs(title = str_glue("Delays per Year on Route {r}"),
@@ -82,7 +83,9 @@ server <- function(input, output){
                  theme(legend.position = "none",
                        plot.title = element_text(hjust = 0.5, size = 25),
                        axis.title = element_text(size = 18),
-                       axis.text = element_text(size = 15)))
+                       axis.text = element_text(size = 15)),
+                 tooltip = "text"
+                 )
     })
   })
 
