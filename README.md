@@ -14,5 +14,4 @@ The delay data is acquired from the [Toronto Open Data Catalogue](https://www.to
 ## TODO:
 
 * Considering that the bus routes don't all run the same amount of times each day, it would be more informative to include number of delays per scheduled hour. I need to find proper data for how frequently each line was supposed to (or did) run throughout the years.
-* Drawing the lines can take a long time, if too many routes are selected. I need to improve performance.
 * Toronto Open Data is in the process of creating an Open Data Portal, which would include an API to access data. Once this is available, I will be able to update the `get_Data.R` script to be able to download and process the data more efficiently.
