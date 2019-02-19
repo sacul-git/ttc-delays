@@ -19,7 +19,7 @@ ui <- shiny::fluidPage(
                   selected = c(35, 36, 52),
                   multiple = TRUE,
                   options = list(`actions-box` = TRUE,
-                                 `select-all-text` = "Select All Routes (slow render)",
+                                 `select-all-text` = "Select All Routes",
                                  `deselect-all-text` = "Deselect All Routes")
                   ),
       selectInput(inputId = "year", label = "Year", choices = c(2014:2018)),

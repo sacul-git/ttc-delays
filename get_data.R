@@ -134,4 +134,22 @@ Data <- inc_year_route <- d %>%
     arrange(desc(n_incidents)) %>%
     inner_join(x = m, y = ., by=c("route" = "Route"))
 
-saveRDS(Data, 'data/Data.rds')
+# merge the multilinestrings together:
+multilineMerge <- function(multilinestrings){
+    return(st_combine(
+             st_cast(
+               st_line_merge(
+                 st_union(
+                   st_cast(
+                     multilinestrings, "MULTILINESTRING"))
+                 ), "LINESTRING")
+             )
+    )
+}
+
+Data <- Data %>%
+    group_by(route) %>%
+    mutate(geometry = multilineMerge(geometry))
+
+saveRDS(Data, "data/Data.rds")
+
